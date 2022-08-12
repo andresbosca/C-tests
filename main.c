@@ -55,37 +55,57 @@ void bubbleSort(int *arr, int n)
   }
 }
 
-// implement merge sort
-void mergeSort(int *arr, int n)
-{
-  int i, j, k, *temp;
-  temp = (int *)malloc(sizeof(int) * n);
-  for (i = 1; i < n; i *= 2)
-  {
-    for (j = 0; j < n - i; j += 2 * i)
-    {
-      for (k = 0; k < i; k++)
-      {
-        temp[j + k] = arr[j + k];
-      }
-      for (k = 0; k < i; k++)
-      {
-        temp[j + k + i] = arr[j + k + i];
-      }
-      for (k = j; k < j + 2 * i; k++)
-      {
-        if (temp[k] < temp[k + 1])
-        {
-          arr[k] = temp[k];
-        }
-        else
-        {
-          arr[k] = temp[k + 1];
-        }
-      }
-    }
+
+/*
+  Dado um vetor v e três inteiros i, m e f, sendo v[i..m] e v[m+1..f] vetores ordenados,
+  coloca os elementos destes vetores, em ordem crescente, no vetor em v[i..f].
+*/
+void merge(int *v, int *c, int i, int m, int f) {
+  int z, iv = i, ic = m + 1;
+
+  for (z = i; z <= f; z++) c[z] = v[z];
+
+  z = i;
+
+  while (iv <= m && ic <= f) {
+    /* Invariante: v[i..z] possui os valores de v[iv..m] e v[ic..f] em ordem crescente. */
+
+    if (c[iv] <= c[ic]) v[z++] = c[iv++];
+    else v[z++] = c[ic++];
   }
 
+  while (iv <= m) v[z++] = c[iv++];
+
+  while (ic <= f) v[z++] = c[ic++];
+}
+
+/*
+  Dado um vetor de inteiros v e dois inteiros i e f, ordena o vetor v[i..f] em ordem crescente.
+  O vetor c é utilizado internamente durante a ordenação.
+*/
+void sort(int *v, int *c, int i, int f) {
+  if (i >= f) return;
+
+  int m = (i + f) / 2;
+
+  sort(v, c, i, m);
+  sort(v, c, m + 1, f);
+
+  /* Se v[m] <= v[m + 1], então v[i..f] já está ordenado. */
+  if (v[m] <= v[m + 1]) return;
+
+  merge(v, c, i, m, f);
+}
+
+
+// merge sort
+/*
+  Dado um vetor de inteiros v e um inteiro n >= 0, ordena o vetor v[0..n-1] em ordem crescente.
+*/
+void mergesort(int *v, int n) {
+  int *c = malloc(sizeof(int) * n);
+  sort(v, c, 0, n - 1);
+  free(c);
 }
 
 // function to swap elements
@@ -158,46 +178,60 @@ void printArray(int array[], int size)
 }
 
 // get array of n random integers
-void getRandomArray(int array[], int size)
+void getRandomArray(int *arr, int n)
 {
-  for (int i = 0; i < size; ++i)
+  srand(time(NULL));
+  for (int i = 0; i < n; i++)
   {
-    array[i] = rand() % 100;
+    int r = rand() % n;
+    arr[i] = r;
+
   }
 }
 
+// Process sorters and print time taken
+void processSorters(int *arr2, int n)
+{
+  clock_t start, end;
+ 
+  getRandomArray(arr2, n);
+ 
+  start = clock();
+  selectSort(arr2, n);
+  end = clock();
+  printf("Select sort took %f seconds to execute.\n", (double)(end - start) / CLOCKS_PER_SEC);
+  
+  getRandomArray(arr2, n);
+  start = clock();
+  insertSort(arr2, n);
+  end = clock();
+  printf("Insert sort took %f seconds to execute.\n", (double)(end - start) / CLOCKS_PER_SEC);
+  
+  getRandomArray(arr2, n);
+  start = clock();
+  bubbleSort(arr2, n);
+  end = clock();
+  printf("Bubble sort took %f seconds to execute.\n", (double)(end - start) / CLOCKS_PER_SEC);
+  
+  getRandomArray(arr2, n);
+  start = clock();
+  mergesort(arr2, n);
+  end = clock();
+  printf("Merge sort took %f seconds to execute.\n", (double)(end - start) / CLOCKS_PER_SEC);
+  
+  getRandomArray(arr2, n);
+  start = clock();
+  quickSort(arr2, 0, n - 1);
+  end = clock();
+  printf("Quick sort took %f seconds to execute.\n", (double)(end - start) / CLOCKS_PER_SEC);
+}
 const ARRAY_SIZE = 100000;
 
 // main function
 int main()
 {
   int array[100000];
-  getRandomArray(array, sizeof(array));
-
-}
-
-// Process sorters and print time taken
-void processSorters(int *arr, int n)
-{
-  clock_t start, end;
-  start = clock();
-  selectSort(arr, n);
-  end = clock();
-  printf("Select sort took %f seconds to execute.\n", (double)(end - start) / CLOCKS_PER_SEC);
-  start = clock();
-  insertSort(arr, n);
-  end = clock();
-  printf("Insert sort took %f seconds to execute.\n", (double)(end - start) / CLOCKS_PER_SEC);
-  start = clock();
-  bubbleSort(arr, n);
-  end = clock();
-  printf("Bubble sort took %f seconds to execute.\n", (double)(end - start) / CLOCKS_PER_SEC);
-  start = clock();
-  mergeSort(arr, n);
-  end = clock();
-  printf("Merge sort took %f seconds to execute.\n", (double)(end - start) / CLOCKS_PER_SEC);
-  start = clock();
-  quickSort(arr, 0, n - 1);
-  end = clock();
-  printf("Quick sort took %f seconds to execute.\n", (double)(end - start) / CLOCKS_PER_SEC);
+  int size = ARRAY_SIZE;
+  processSorters(array, size);
+  return 0;
 }
