@@ -86,15 +86,22 @@ int main()
 {
     struct node *root = NULL;
     int data;
-    while (scanf("%d", &data) != EOF)
+
+    while (1)
     {
+        printf("Enter a number: ");
+        scanf("%d", &data);
+        if (data == -1)
+        {
+            break;
+        }
         root = insertNode(root, data);
     }
-    preOrder(root);
 
-    printf(search(root, 5) ? "Found node 5" : "Not Found");
-    printf(search(root, 1) ? "Found node 1" : "Not Found");
-    printf(search(root, 100) ? "Found node 100" : "Not Found");
+    preOrder(root);
+    printf(search(root, 5) ? "Found node 5 \n" : "Not Found \n");
+    printf(search(root, 1) ? "Found node 1 \n" : "Not Found \n");
+    printf(search(root, 100) ? "Found node 100 \n" : "Not Found \n");
 
     printf("Sum of all nodes in binary tree is %d", sum(root));
     return 0;
