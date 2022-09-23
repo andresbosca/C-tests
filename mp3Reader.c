@@ -9,7 +9,9 @@ typedef struct mp3Tag
     char artist[30];
     char album[30];
     char year[4];
-    char comment[30];
+    char comment[28];
+    char bitRate[1];
+    char sampleRate[1];
     int genre;
 };
 
@@ -18,7 +20,7 @@ int mp3TagSize = 128;
 
 int main()
 {
-    mp3Tag *tagStruct = malloc(sizeof(mp3Tag));
+    struct mp3Tag *tagStruct = malloc(sizeof(struct mp3Tag));
     char fileName[fileNameLength + 1];
     FILE *mp3File;
     char buffer[mp3TagSize + 1];
@@ -58,6 +60,8 @@ int main()
         printf("Album: %30s\n", tagStruct->album);
         printf("Year: %4s\n", tagStruct->year);
         printf("Comment: %30s\n", tagStruct->comment);
+        printf("BitRate: %1s\n", tagStruct->bitRate);
+        printf("SampleRate: %1s\n", tagStruct->sampleRate);
         printf("Genre: %d\n", tagStruct->genre);
 
         printf("Successful read of %s \n", fileName);
