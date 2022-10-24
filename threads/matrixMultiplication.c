@@ -4,10 +4,10 @@
 #include <pthread.h>
 
 #ifndef TOTAL_LINES
-#define TOTAL_LINES 100
+#define TOTAL_LINES 5
 #endif
 #ifndef TOTAL_COLUMNS
-#define TOTAL_COLUMNS 100
+#define TOTAL_COLUMNS 5
 #endif
 
 void fillMatrix(int matrixA[TOTAL_LINES][TOTAL_COLUMNS], int matrixB[TOTAL_LINES][TOTAL_COLUMNS])
@@ -56,6 +56,7 @@ void printMatrix(int matrix[TOTAL_LINES][TOTAL_COLUMNS])
         }
         printf("\n");
     }
+    printf("\n");
 }
 
 void calculateMatrix(long threadNumber)

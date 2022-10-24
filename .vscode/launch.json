@@ -1,6 +1,5 @@
-{   "version": "0.2.0",
+{
   "configurations": [
-    
     {
       "name": "C/C++: gcc.exe Compilar e depurar o arquivo ativo",
       "type": "cppdbg",
@@ -12,7 +11,7 @@
       "environment": [],
       "externalConsole": false,
       "MIMode": "gdb",
-      "miDebuggerPath": "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\gdb.exe",
+      "miDebuggerPath": "C:\\MinGW\\bin\\gdb.exe",
       "setupCommands": [
         {
           "description": "Habilitar a reformatação automática para gdb",
@@ -27,5 +26,6 @@
       ],
       "preLaunchTask": "C/C++: gcc.exe arquivo de build ativo"
     }
-  ]
+  ],
+  "version": "2.0.0"
 }
