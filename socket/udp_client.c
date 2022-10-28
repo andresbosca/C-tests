@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <winsock2.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -7,12 +10,30 @@
 #define BUFLEN 512
 #define PORT 8888
 
+struct temperature
+{
+    int id;
+    int seq;
+    int value;
+};
+
+void *sendToServer(SOCKET s, struct sockaddr_in si_other, int slen, struct temperature temp)
+{
+    if (sendto(s, &temp, sizeof(temp), 0, (struct sockaddr *)&si_other, slen) == SOCKET_ERROR)
+    {
+        printf("sendto() failed with error code : %d", WSAGetLastError());
+        exit(EXIT_FAILURE);
+    }
+
+    printf("Data Sent. Id : %d. \n", temp.id);
+}
+
 int main(void)
 {
     struct sockaddr_in si_other;
     int s, slen = sizeof(si_other);
     char buf[BUFLEN];
-    char message[BUFLEN];
+    char message[5][BUFLEN];
     int sequence = 0;
     WSADATA wsa;
 
@@ -40,27 +61,30 @@ int main(void)
 
     while (1)
     {
-        for (int i = 0; i < 5; i++)
+        pthread_t thread[10];
+        for (int i = 0; i < 10; i++)
         {
             sequence++;
-            message[i] = "id: " + id + ", sequence: " + sequence + ", value: " + rand() * 50 - 20;
+            struct temperature temp;
 
-            if (sendto(s, message[i], strlen(message[i]), 0, (struct sockaddr *)&si_other, slen) == SOCKET_ERROR)
-            {
-                printf("sendto() failed with error code : %d", WSAGetLastError());
-                exit(EXIT_FAILURE);
-            }
+            temp.id = i + 1;
+            temp.seq = sequence;
+            temp.value = rand() % 50 - 20;
 
-            memset(buf, '\0', BUFLEN);
-            // try to receive some data, this is a blocking call
-            if (recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *)&si_other, &slen) == SOCKET_ERROR)
-            {
-                printf("recvfrom() failed with error code : %d", WSAGetLastError());
-                exit(EXIT_FAILURE);
-            }
+            pthread_create(&thread[i], NULL, sendToServer(s, si_other, slen, temp), NULL);
 
-            puts(buf);
+            // if (sendto(s, &temp, sizeof(temp), 0, (struct sockaddr *)&si_other, slen) == SOCKET_ERROR)
+            // {
+            //     printf("sendto() failed with error code : %d", WSAGetLastError());
+            //     exit(EXIT_FAILURE);
+            // }
         }
+        for (int i = 0; i < 10; i++)
+        {
+            pthread_join(thread[i], NULL);
+        }
+        pthread_exit(NULL);
+        sleep(5);
     }
 
     closesocket(s);

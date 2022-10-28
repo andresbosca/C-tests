@@ -6,6 +6,13 @@
 #define BUFLEN 512
 #define PORT 8888
 
+struct temperature
+{
+    int id;
+    int seq;
+    int value;
+};
+
 int main()
 {
     SOCKET s;
@@ -46,22 +53,16 @@ int main()
         printf("Waiting for data...");
         fflush(stdout);
 
-        memset(buf, '\0', BUFLEN);
+        struct temperature temp;
 
-        if ((recv_len = recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *)&si_other, &slen)) == SOCKET_ERROR)
+        if ((recv_len = recvfrom(s, (char *)&temp, sizeof(temp), 0, (struct sockaddr *)&si_other, &slen)) == SOCKET_ERROR)
         {
             printf("recvfrom() failed with error code : %d", WSAGetLastError());
             exit(EXIT_FAILURE);
         }
 
         printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
-        printf("Data: %s\n", buf);
-
-        if (sendto(s, buf, recv_len, 0, (struct sockaddr *)&si_other, slen) == SOCKET_ERROR)
-        {
-            printf("sendto() failed with error code : %d", WSAGetLastError());
-            exit(EXIT_FAILURE);
-        }
+        printf("id : %d, seq : %d, value : %d \n", temp.id, temp.seq, temp.value);
     }
 
     closesocket(s);
