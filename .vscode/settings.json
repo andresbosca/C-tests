@@ -1,5 +1,10 @@
 {
   "files.associations": {
-    "winsock2.h": "c"
+    "winsock2.h": "c",
+    "graphics.h": "c",
+    "windows.h": "c",
+    "iosfwd": "c",
+    "limits.h": "c",
+    "sstream": "cpp"
   }
 }

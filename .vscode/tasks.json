@@ -2,22 +2,32 @@
   "tasks": [
     {
       "type": "cppbuild",
-      "label": "C/C++: gcc.exe arquivo de build ativo",
-      "command": "C:\\MinGW\\bin\\gcc.exe",
+      "label": "C/C++: g++.exe arquivo de build ativo",
+      "command": "C:/MinGW/bin/g++.exe",
       "args": [
         "-fdiagnostics-color=always",
         "-g",
         "${file}",
         "-o",
         "${fileDirname}\\${fileBasenameNoExtension}.exe",
-        "-pthread",
-        "-lws2_32"
+        "-lbgi",
+        "-lgdi32",
+        "-lcomdlg32",
+        "-luuid",
+        "-loleaut32",
+        "-lole32",
+        "-lstdc++"
       ],
       "options": {
-        "cwd": "${fileDirname}"
+        "cwd": "C:/MinGW/bin"
       },
-      "problemMatcher": ["$gcc"],
-      "group": "build",
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
       "detail": "Tarefa gerada pelo Depurador."
     }
   ],
